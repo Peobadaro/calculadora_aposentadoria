@@ -2,6 +2,16 @@
   "name": "calculadora-aposentadoria",
   "version": "1.0.0",
   "scripts": {
-    "vercel-build": "pip install -r requirements.txt"
+    "start": "node index.js",
+    "vercel-build": "react-scripts build"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-scripts": "^3.0.1"
+  },
+  "overrides": {
+    "@babel/traverse": "^7.23.2",
+    "postcss": "^8.4.31",
+    "nth-check": "^2.1.1"
   }
 }
