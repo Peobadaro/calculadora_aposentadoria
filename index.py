@@ -1,15 +1,7 @@
-from starlette.applications import Starlette
-from starlette.responses import JSONResponse
-from starlette.routing import Route
+from fastapi import FastAPI
 
-async def homepage(request):
-    return JSONResponse({
-        "message": "Calculadora de Aposentadoria API",
-        "status": "online"
-    })
+app = FastAPI()
 
-routes = [
-    Route("/", endpoint=homepage)
-]
-
-app = Starlette(debug=False, routes=routes) 
+@app.get("/")
+def read_root():
+    return {"message": "Calculadora de Aposentadoria funcionando!"}
