@@ -1,14 +1,16 @@
 {
     "version": 2,
     "builds": [
-      {
-        "src": "package.json",
-        "use": "@vercel/static-build",
-        "config": {}
-      }
+        {
+            "src": "calculadora_aposentadoria.py",
+            "use": "@vercel/python"
+        }
     ],
     "routes": [
-      { "src": "/(.*)", "dest": "/index.html" }
+        {
+            "src": "/(.*)",
+            "dest": "calculadora_aposentadoria.py"
+        }
     ]
-  }
+}
   
