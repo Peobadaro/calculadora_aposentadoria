@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "vercel-build": "pip install -r requirements.txt",
-    "build": "pip install -r requirements.txt"
+    "vercel-build": "pip install -r requirements.txt"
   },
   "engines": {
     "node": ">=18.0.0"
