@@ -7,9 +7,23 @@ def formatar_moeda(valor, pos=None):
     """Função auxiliar para formatar valores em SGD"""
     return f'SGD {valor:,.0f}'
 
+def validar_entrada(valor, min_valor, max_valor, nome_campo):
+    """Valida os valores de entrada"""
+    if not isinstance(valor, (int, float)):
+        raise ValueError(f"{nome_campo} deve ser um número")
+    if valor < min_valor or valor > max_valor:
+        raise ValueError(f"{nome_campo} deve estar entre {min_valor} e {max_valor}")
+    return valor
+
 def calcular_aposentadoria(aporte_mensal, anos, taxa_retorno, taxa_retirada):
     """Calcula os valores da aposentadoria"""
     try:
+        # Validar entradas
+        aporte_mensal = validar_entrada(aporte_mensal, 0, 1000000, "Aporte mensal")
+        anos = validar_entrada(anos, 1, 50, "Anos até aposentadoria")
+        taxa_retorno = validar_entrada(taxa_retorno, 0.01, 0.20, "Taxa de retorno")
+        taxa_retirada = validar_entrada(taxa_retirada, 0.01, 0.10, "Taxa de retirada")
+        
         meses = anos * 12
         taxa_mensal = (1 + taxa_retorno) ** (1/12) - 1
         
