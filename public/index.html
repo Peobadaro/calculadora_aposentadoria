@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Aposentadoria</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .result-card {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Calculadora de Aposentadoria</h1>
+        
+        <form id="calculadoraForm" class="mb-4">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="aporte_mensal" class="form-label">Aporte Mensal (R$)</label>
+                    <input type="number" class="form-control" id="aporte_mensal" required min="0" max="1000000" step="100" value="2000">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="anos" class="form-label">Anos até Aposentadoria</label>
+                    <input type="number" class="form-control" id="anos" required min="1" max="50" value="25">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="taxa_retorno" class="form-label">Taxa de Retorno Anual (%)</label>
+                    <input type="number" class="form-control" id="taxa_retorno" required min="1" max="20" step="0.1" value="10">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="taxa_retirada" class="form-label">Taxa de Retirada Anual (%)</label>
+                    <input type="number" class="form-control" id="taxa_retirada" required min="1" max="10" step="0.1" value="4">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Calcular</button>
+        </form>
+
+        <div id="resultados" style="display: none;">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="result-card bg-light">
+                        <h3>Resultados</h3>
+                        <p><strong>Valor Total Acumulado:</strong> <span id="valor_final"></span></p>
+                        <p><strong>Total Investido:</strong> <span id="total_investido"></span></p>
+                        <p><strong>Rendimentos:</strong> <span id="rendimentos"></span></p>
+                        <p><strong>Saque Mensal Possível:</strong> <span id="saque_mensal"></span></p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <canvas id="grafico"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const formatMoeda = (valor) => {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(valor);
+        };
+
+        let grafico = null;
+
+        document.getElementById('calculadoraForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const dados = {
+                aporte_mensal: parseFloat(document.getElementById('aporte_mensal').value),
+                anos: parseInt(document.getElementById('anos').value),
+                taxa_retorno: parseFloat(document.getElementById('taxa_retorno').value) / 100,
+                taxa_retirada: parseFloat(document.getElementById('taxa_retirada').value) / 100
+            };
+
+            try {
+                const response = await fetch('/calcular', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dados)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao calcular');
+                }
+
+                const resultado = await response.json();
+                
+                // Atualizar resultados
+                document.getElementById('valor_final').textContent = formatMoeda(resultado.valor_final);
+                document.getElementById('total_investido').textContent = formatMoeda(resultado.total_investido);
+                document.getElementById('rendimentos').textContent = formatMoeda(resultado.rendimentos);
+                document.getElementById('saque_mensal').textContent = formatMoeda(resultado.saque_mensal);
+                
+                // Mostrar resultados
+                document.getElementById('resultados').style.display = 'block';
+                
+                // Atualizar gráfico
+                if (grafico) {
+                    grafico.destroy();
+                }
+                
+                const ctx = document.getElementById('grafico').getContext('2d');
+                grafico = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: Array.from({length: resultado.saldo_acumulado.length}, (_, i) => i),
+                        datasets: [{
+                            label: 'Saldo Acumulado',
+                            data: resultado.saldo_acumulado,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }, {
+                            label: 'Total Investido',
+                            data: resultado.aportes_totais,
+                            borderColor: 'rgb(255, 99, 132)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Evolução do Patrimônio'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                ticks: {
+                                    callback: (value) => formatMoeda(value)
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                alert('Erro ao calcular. Por favor, tente novamente.');
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html> 
