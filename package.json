@@ -1,0 +1,11 @@
+{
+  "name": "calculadora-aposentadoria",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "vercel-build": "pip install -r requirements.txt"
+  },
+  "devDependencies": {
+    "@streamlit/vercel-plugin": "^1.0.0"
+  }
+} 

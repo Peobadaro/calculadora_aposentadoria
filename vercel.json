@@ -1,16 +1,16 @@
 {
     "version": 2,
     "builds": [
-      {
-        "src": "index.py",
-        "use": "@vercel/python"
-      }
+        {
+            "src": "api/streamlit_app.py",
+            "use": "@streamlit/vercel-plugin"
+        }
     ],
     "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "index.py"
-      }
+        {
+            "src": "/(.*)",
+            "dest": "api/streamlit_app.py"
+        }
     ]
-  }
+}
   
