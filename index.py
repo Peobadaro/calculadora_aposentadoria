@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from calculadora_aposentadoria import calcular_aposentadoria  # Importe a função ou lógica do arquivo
 
 app = FastAPI()
 
@@ -7,8 +8,7 @@ def read_root():
     return {"message": "Calculadora de Aposentadoria funcionando!"}
 
 @app.get("/calcular")
-def calcular_aposentadoria(idade: int, contribuicao: int):
-    # Exemplo simples de lógica de cálculo
-    if idade >= 60 and contribuicao >= 35:
-        return {"status": "Aprovado", "mensagem": "Você já pode se aposentar!"}
-    return {"status": "Reprovado", "mensagem": "Você ainda não atende aos requisitos para aposentadoria."}
+def calcular(idade: int, contribuicao: int):
+    # Utilize a função do arquivo calculadora_aposentadoria.py
+    resultado = calcular_aposentadoria(idade, contribuicao)
+    return resultado
