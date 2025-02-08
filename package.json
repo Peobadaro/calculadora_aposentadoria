@@ -1,5 +1,7 @@
 {
-  "dependencies": {
-    "mongoose": "^8.10.0"
+  "name": "calculadora-aposentadoria",
+  "version": "1.0.0",
+  "scripts": {
+    "vercel-build": "pip install -r requirements.txt"
   }
 }

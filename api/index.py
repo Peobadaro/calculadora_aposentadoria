@@ -1,13 +1,11 @@
 import sys
 import os
-from pathlib import Path
 
-# Adiciona o diretório raiz ao PYTHONPATH
-root_path = Path(__file__).resolve().parent.parent
-sys.path.append(str(root_path))
+# Adiciona o diretório raiz ao PATH do Python
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from calculadora_aposentadoria import app
 
-# Função para servir a aplicação
-def handler(request, response):
-    return app(request, response) 
+# Configuração para o Vercel
+if __name__ == "__main__":
+    app.run()
